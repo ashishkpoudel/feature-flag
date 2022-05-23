@@ -1,5 +1,5 @@
 import {FeatureFlag} from 'src/decorator/feature-flag';
-import {featureFlagMap} from 'src/feature-flag-map';
+import {featureFlagStore} from 'src/feature-flag.store';
 import {Feature} from 'src/interface/feature-flag';
 
 describe('Example Test', () => {
@@ -10,20 +10,20 @@ describe('Example Test', () => {
       name = 'hostCommission';
     }
 
-    console.log(featureFlagMap.value);
+    console.log(featureFlagStore.featureFlags);
 
     expect(true).toEqual(true);
   });
 
   it('Another Passes', () => {
-    console.log(featureFlagMap.value);
+    console.log(featureFlagStore.featureFlags);
 
     @FeatureFlag('production', {enabled: false})
     class BrandCommission implements Feature {
       name = 'brandCommission';
     }
 
-    console.log(featureFlagMap.value);
+    console.log(featureFlagStore.featureFlags);
 
     expect(true).toEqual(true);
   });

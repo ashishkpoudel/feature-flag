@@ -1,5 +1,5 @@
 import {FeatureOptions} from 'src/types';
-import {featureFlagMap} from 'src/feature-flag-map';
+import {featureFlagStore} from 'src/feature-flag.store';
 
 type Constructor = {new (...args: any[]): any};
 
@@ -11,8 +11,6 @@ export function FeatureFlag(environment: string, options: FeatureOptions): Class
       throw new Error('Feature must have a name set');
     }
 
-    featureFlagMap.set(environment, {
-      [target.name]: options,
-    });
+    featureFlagStore.set(environment, target.name, options);
   };
 }

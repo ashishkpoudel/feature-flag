@@ -1,14 +1,18 @@
-import { FeatureOptions} from 'src/types';
+import { FeatureOptions } from 'src/types';
 
 export class FeatureFlagStore {
-  readonly featureFlags = new Map<string, {[feature: string]: FeatureOptions}>();
+  private readonly featureFlags = new Map<string, { [feature: string]: FeatureOptions }>();
 
   set(environment: string, feature: string, options: FeatureOptions) {
     const existingFeatureFlags = this.featureFlags.get(environment) || {};
     this.featureFlags.set(environment, {
       ...existingFeatureFlags,
-      ...{[feature]: options},
+      ...{ [feature]: options },
     });
+  }
+
+  get(environment: string, feature: string): FeatureOptions | undefined {
+    return this.featureFlags.get(environment)?.[feature];
   }
 
   clear() {
@@ -18,4 +22,4 @@ export class FeatureFlagStore {
 
 const featureFlagStore = new FeatureFlagStore();
 
-export {featureFlagStore};
+export { featureFlagStore };

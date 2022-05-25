@@ -1,5 +1,5 @@
 {
-  "name": "feature-flag",
+  "name": "feature-fly",
   "version": "0.0.0",
   "description": "Feature Flag",
   "main": "./dist/index.js",

@@ -7,7 +7,7 @@ Feature Management (also called feature toggle, feature flag) makes it easier to
 You can install the package via npm:
 
 ```
-npm install feature-manager
+npm install feature-management
 ```
 
 ## Usage

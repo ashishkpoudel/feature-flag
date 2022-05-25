@@ -23,10 +23,11 @@ Feature must be declared as a class. Feature flag configuration is then applied 
 class HostReport implements Feature {}
 ```
 
-Above we've declared a feature called `HostReport` with feature flag configuration applied for two environments. Now we'll need to initialize feature manager and check if specified feature is enabled or not based on environment.
+Above we've declared a feature called `HostReport` with feature flag configuration applied for multiple environment. Last step is to initialize feature manager and check if specified feature is enabled or not based on current environment.
 
 ```typescript
 const featureManager = new FeatureManager(process.env.APP_ENV);
+
 if (featureManager.isEnabled('HostReport')) {
   // run this block if enabled
 }

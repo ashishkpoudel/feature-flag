@@ -9,8 +9,8 @@ describe('Feature Flag Manager', () => {
   });
 
   it('should return false when feature is not registered', () => {
-    const featureFlagProvider = new FeatureManager('production');
-    expect(featureFlagProvider.isEnabled('UnknownFeature')).toEqual(false);
+    const featureManager = new FeatureManager('production');
+    expect(featureManager.isEnabled('UnknownFeature')).toEqual(false);
   });
 
   it('should return true if feature is enabled for specified environment', () => {

@@ -1,7 +1,7 @@
 {
-  "name": "feature-fly",
+  "name": "feature-manager",
   "version": "0.0.0",
-  "description": "Feature Flag",
+  "description": "Feature Flag Manager",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -18,7 +18,9 @@
   },
   "keywords": [
     "feature-flag",
-    "feature-toggle"
+    "feature-toggle",
+    "feature-flag-manager",
+    "feature-manager"
   ],
   "author": {
     "name": "Ashish K. Poudel",

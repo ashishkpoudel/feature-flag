@@ -1,6 +1,7 @@
-import { featureFlagStore } from 'src/feature-flag.store';
+import { FeatureFlagStore, featureFlagStore } from 'src/feature-flag.store';
+import { Feature } from 'src/interface/feature-flag';
 
-export class FeatureFlagProvider {
+export class FeatureManager {
   constructor(private readonly environment: string) {}
 
   isEnabled(feature: string): boolean {

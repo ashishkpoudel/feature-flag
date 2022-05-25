@@ -1,6 +1,6 @@
-# Feature Manager
+# Feature Management
 
-Feature Manager (also called feature toggle, feature flag) makes it easier to enable or disable feature based on specified configuration.
+Feature Management (also called feature toggle, feature flag) makes it easier to enable or disable feature based on specified configuration.
 
 ## Installation
 

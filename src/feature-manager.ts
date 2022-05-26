@@ -1,5 +1,4 @@
-import { FeatureFlagStore, featureFlagStore } from 'src/feature-flag.store';
-import { Feature } from 'src/interface/feature-flag';
+import { featureFlagStore } from 'src/feature-flag.store';
 
 export class FeatureManager {
   constructor(private readonly environment: string) {}

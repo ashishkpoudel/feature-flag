@@ -8,13 +8,12 @@
     "target": "es2020",
     "sourceMap": true,
     "outDir": "./dist",
-    "rootDir": "./src",
     "baseUrl": "./",
     "incremental": false,
     "resolveJsonModule": true,
     "strictNullChecks": true,
     "esModuleInterop": true,
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "test"]
+  "include": ["src/**/*", "test/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

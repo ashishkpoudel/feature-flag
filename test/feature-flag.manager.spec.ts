@@ -8,24 +8,24 @@ describe('Feature Flag Manager', () => {
     featureFlagStore.clear();
   });
 
-  it('should return false when feature is not registered', () => {
+  it('should return false when feature is not registered', async () => {
     const featureManager = new FeatureManager('production');
-    expect(featureManager.isEnabled('UnknownFeature')).toEqual(false);
+    expect(await featureManager.isEnabled('UnknownFeature')).toEqual(false);
   });
 
-  it('should return true if feature is enabled for specified environment', () => {
+  it('should return true if feature is enabled for specified environment', async () => {
     @FeatureFlag('production', { enabled: true })
     class HostReport implements Feature {}
 
     const featureManager = new FeatureManager('production');
-    expect(featureManager.isEnabled(HostReport.name)).toEqual(true);
+    expect(await featureManager.isEnabled(HostReport.name)).toEqual(true);
   });
 
-  it('should return false if feature is disabled for specified environment', () => {
+  it('should return false if feature is disabled for specified environment', async () => {
     @FeatureFlag('staging', { enabled: false })
     class CommunityManagerReport implements Feature {}
 
     const featureManager = new FeatureManager('staging');
-    expect(featureManager.isEnabled(CommunityManagerReport.name)).toEqual(false);
+    expect(await featureManager.isEnabled(CommunityManagerReport.name)).toEqual(false);
   });
 });

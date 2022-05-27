@@ -28,7 +28,7 @@ Above we've declared a feature called `HostReport` with feature flag configurati
 ```typescript
 const featureManager = new FeatureManager(process.env.APP_ENV);
 
-if (featureManager.isEnabled('HostReport')) {
+if (await featureManager.isEnabled('HostReport')) {
   // run this block if enabled
 }
 ```

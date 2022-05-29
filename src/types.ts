@@ -1,3 +1,3 @@
-export type FeatureOptions = {
+export interface FeatureOptions {
   readonly enabled: boolean;
-};
+}

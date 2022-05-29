@@ -1,7 +1,7 @@
-import { Feature } from 'src/interface/feature-flag';
-import { FeatureFlag } from 'src/decorator/feature-flag';
-import { FeatureManager } from 'src/feature-manager';
-import { featureFlagStore } from 'src/feature-flag.store';
+import { Feature } from '../src/interface/feature-flag';
+import { FeatureFlag } from '../src/decorator/feature-flag';
+import { FeatureManager } from '../src/feature-manager';
+import { featureFlagStore } from '../src/feature-flag.store';
 
 describe('Feature Flag Manager', () => {
   beforeEach(() => {

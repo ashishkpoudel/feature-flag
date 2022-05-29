@@ -1,6 +1,6 @@
 {
   "name": "feature-management",
-  "version": "0.0.4",
+  "version": "0.0.9",
   "description": "Feature Flag Management",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -8,7 +8,7 @@
     "/dist"
   ],
   "scripts": {
-    "lint": "eslint \"{src,apps,test}/**/*.ts\"",
+    "lint": "eslint \"{src,test}/**/*.ts\"",
     "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
     "format": "prettier --config .prettierrc --write \"**/*.ts\"",
     "prebuild": "rimraf dist",

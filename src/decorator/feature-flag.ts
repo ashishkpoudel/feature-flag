@@ -1,5 +1,5 @@
-import { FeatureOptions } from 'src/types';
-import { featureFlagStore } from 'src/feature-flag.store';
+import { FeatureOptions } from '../types';
+import { featureFlagStore } from '../feature-flag.store';
 
 export function FeatureFlag(environment: string, options: FeatureOptions): ClassDecorator {
   return (target) => {

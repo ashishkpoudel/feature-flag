@@ -1,4 +1,4 @@
-import { FeatureOptions } from 'src/types';
+import { FeatureOptions } from './types';
 
 export class FeatureFlagStore {
   private readonly featureFlags = new Map<string, { [feature: string]: FeatureOptions }>();

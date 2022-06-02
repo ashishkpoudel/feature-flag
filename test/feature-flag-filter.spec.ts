@@ -11,14 +11,14 @@ describe('Feature Flag Filter', () => {
     featureFlagStore.clear();
   });
 
-  it('sample', async () => {
+  it('should be disabled when filter resolves to false', async () => {
     const featureManager = new FeatureManager('production');
 
     class AlwaysFalseFilter implements IFeatureFilter {}
 
     @FeatureFilterHandler(AlwaysFalseFilter)
-    class AlwaysFalseFilterHandler implements IFeatureFilterHandler<AlwaysFalseFilter> {
-      async evaluate(filter: AlwaysFalseFilter): Promise<boolean> {
+    class _AlwaysFalseFilterHandler implements IFeatureFilterHandler<AlwaysFalseFilter> {
+      async evaluate(_filter: AlwaysFalseFilter): Promise<boolean> {
         return false;
       }
     }

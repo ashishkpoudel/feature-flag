@@ -3,12 +3,14 @@ import { featureFlagStore } from './feature-flag.store';
 import { DefaultFilter } from './filter/default.filter';
 import { FEATURE_FILTER_METADATA } from './decorator/constants';
 import { IFeatureFilterHandler } from './interface/feature-filter-handler.interface';
+import { IFeature } from './interface/feature.interface';
 
 export class FeatureManager {
   constructor(private readonly environment: string) {}
 
-  async isEnabled(feature: string): Promise<boolean> {
-    const featureFlagOptions = featureFlagStore.get(this.environment, feature);
+  async isEnabled(feature: IFeature | string): Promise<boolean> {
+    const featureName = typeof feature === 'string' ? feature : feature['name'];
+    const featureFlagOptions = featureFlagStore.get(this.environment, featureName);
 
     if (!featureFlagOptions || !featureFlagOptions.enabled) {
       return false;

@@ -18,7 +18,7 @@ describe('Feature Flag Manager', () => {
     class HostReport implements IFeature {}
 
     const featureManager = new FeatureManager('production');
-    expect(await featureManager.isEnabled(HostReport.name)).toEqual(true);
+    expect(await featureManager.isEnabled(HostReport)).toEqual(true);
   });
 
   it('should return false if feature is disabled for specified environment', async () => {
@@ -26,6 +26,6 @@ describe('Feature Flag Manager', () => {
     class CommunityManagerReport implements IFeature {}
 
     const featureManager = new FeatureManager('staging');
-    expect(await featureManager.isEnabled(CommunityManagerReport.name)).toEqual(false);
+    expect(await featureManager.isEnabled(CommunityManagerReport)).toEqual(false);
   });
 });

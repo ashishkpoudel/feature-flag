@@ -1,6 +1,6 @@
-import { FeatureFilter } from './interface/feature-filter';
+import { IFeatureFilter } from 'src/interface/feature-filter.interface';
 
 export interface FeatureOptions {
   readonly enabled: boolean;
-  readonly filters?: readonly FeatureFilter[];
+  readonly filters?: readonly IFeatureFilter[];
 }

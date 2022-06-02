@@ -64,5 +64,8 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "coverageDirectory": "../coverage"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
   }
 }

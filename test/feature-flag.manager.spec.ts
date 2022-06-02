@@ -1,5 +1,5 @@
-import { Feature } from '../src/interface/feature-flag';
-import { FeatureFlag } from '../src/decorator/feature-flag';
+import { IFeature } from '../src/interface/feature.interface';
+import { FeatureFlag } from '../src/decorator/feature-flag.decorator';
 import { FeatureManager } from '../src/feature-manager';
 import { featureFlagStore } from '../src/feature-flag.store';
 
@@ -15,17 +15,17 @@ describe('Feature Flag Manager', () => {
 
   it('should return true if feature is enabled for specified environment', async () => {
     @FeatureFlag('production', { enabled: true })
-    class HostReport implements Feature {}
+    class HostReport implements IFeature {}
 
     const featureManager = new FeatureManager('production');
-    expect(await featureManager.isEnabled(HostReport.name)).toEqual(true);
+    expect(await featureManager.isEnabled(HostReport)).toEqual(true);
   });
 
   it('should return false if feature is disabled for specified environment', async () => {
     @FeatureFlag('staging', { enabled: false })
-    class CommunityManagerReport implements Feature {}
+    class CommunityManagerReport implements IFeature {}
 
     const featureManager = new FeatureManager('staging');
-    expect(await featureManager.isEnabled(CommunityManagerReport.name)).toEqual(false);
+    expect(await featureManager.isEnabled(CommunityManagerReport)).toEqual(false);
   });
 });

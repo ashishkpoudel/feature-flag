@@ -1,3 +1,7 @@
+### NOTE: under rapid develop, not ready for production use
+
+---
+
 # Feature Management
 
 Feature Management (also called feature toggle, feature flag) makes it easier to enable or disable feature based on specified configuration.
@@ -20,7 +24,7 @@ Feature must be declared as a class. Feature flag configuration is then applied 
 ```typescript
 @FeatureFlag('production', { enabled: false })
 @FeatureFlag('staging', { enabled: true })
-class HostReport implements Feature {}
+class HostReport implements IFeature {}
 ```
 
 Above we've declared a feature called `HostReport` with feature flag configuration applied for multiple environment. Last step is to initialize feature manager and check if specified feature is enabled or not based on current environment.
@@ -28,7 +32,7 @@ Above we've declared a feature called `HostReport` with feature flag configurati
 ```typescript
 const featureManager = new FeatureManager(process.env.APP_ENV);
 
-if (await featureManager.isEnabled('HostReport')) {
+if (await featureManager.isEnabled(HostReport)) {
   // run this block if enabled
 }
 ```

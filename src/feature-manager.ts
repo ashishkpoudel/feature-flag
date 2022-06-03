@@ -4,8 +4,10 @@ import { DefaultFilter } from './filter/default.filter';
 import { FEATURE_FILTER_METADATA } from './decorator/constants';
 import { IFeatureFilterHandler } from './interface/feature-filter-handler.interface';
 import { IFeature } from './interface/feature.interface';
+import { Container } from './container';
 
 export class FeatureManager {
+  private container = new Container();
   constructor(private readonly environment: string) {}
 
   async isEnabled(feature: IFeature | string): Promise<boolean> {
@@ -20,7 +22,8 @@ export class FeatureManager {
 
     const pEvaluatedResult = filters.map(async (filter) => {
       const filterHandler = Reflect.getMetadata(FEATURE_FILTER_METADATA, filter.constructor);
-      return (<IFeatureFilterHandler>new filterHandler()).evaluate(filter);
+      const filterHandlerInstance = this.container.get<IFeatureFilterHandler>(filterHandler);
+      return filterHandlerInstance.evaluate(filter);
     });
 
     return (await Promise.all(pEvaluatedResult)).includes(true);

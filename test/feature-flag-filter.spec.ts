@@ -14,16 +14,21 @@ describe('Feature Flag Filter', () => {
   it('should be disabled when filter resolves to false', async () => {
     const featureManager = new FeatureManager('production');
 
-    class AlwaysFalseFilter implements IFeatureFilter {}
+    class DefaultFilter implements IFeatureFilter {
+      constructor(readonly value: boolean) {}
+    }
 
-    @FeatureFilterHandler(AlwaysFalseFilter)
-    class _AlwaysFalseFilterHandler implements IFeatureFilterHandler<AlwaysFalseFilter> {
-      async evaluate(_filter: AlwaysFalseFilter): Promise<boolean> {
-        return false;
+    @FeatureFilterHandler(DefaultFilter)
+    class _DefaultFilterHandler implements IFeatureFilterHandler<DefaultFilter> {
+      async evaluate(_filter: DefaultFilter): Promise<boolean> {
+        return _filter.value;
       }
     }
 
-    @FeatureFlag('production', { enabled: true, filters: [new AlwaysFalseFilter()] })
+    @FeatureFlag('production', {
+      enabled: true,
+      filters: [new DefaultFilter(false)],
+    })
     class HostReport implements IFeature {}
 
     expect(await featureManager.isEnabled(HostReport.name)).toEqual(false);

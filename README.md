@@ -1,4 +1,4 @@
-### NOTE: under rapid develop, not ready for production use
+### NOTE: under rapid development, not ready for production use
 
 ---
 

@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { featureFlagStore } from './feature-flag.store';
-import { DefaultFilter } from './filter/default.filter';
 import { FEATURE_FILTER_METADATA } from './decorator/constants';
 import { IFeatureFilterHandler } from './interface/feature-filter-handler.interface';
 import { IFeature } from './interface/feature.interface';
@@ -17,14 +16,15 @@ export class FeatureManager {
       return false;
     }
 
-    const filters = featureFlagOptions?.filters || [new DefaultFilter(true)];
+    const filters = featureFlagOptions?.filters || [];
 
-    const pEvaluatedResult = filters.map(async (filter) => {
+    for (const filter of filters) {
       const filterHandler = Reflect.getMetadata(FEATURE_FILTER_METADATA, filter.constructor);
       const filterHandlerInstance = containerProvider.get<IFeatureFilterHandler>(filterHandler);
-      return filterHandlerInstance.evaluate(filter);
-    });
+      const evaluatedResult = await filterHandlerInstance.evaluate(filter);
+      if (evaluatedResult) return true;
+    }
 
-    return (await Promise.all(pEvaluatedResult)).includes(true);
+    return featureFlagOptions.enabled;
   }
 }

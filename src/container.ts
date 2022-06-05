@@ -7,15 +7,15 @@ class DefaultContainer implements IContainer {
   }
 }
 
-export class ContainerProvider {
-  constructor(private _container = new DefaultContainer()) {}
+class ContainerProvider {
+  constructor(private container = new DefaultContainer()) {}
 
-  get<T>(anyClass: Class<T>): T {
-    return this._container.get<T>(anyClass);
+  resolveContainer() {
+    return this.container;
   }
 
   useContainer(container: IContainer) {
-    this._container = container;
+    this.container = container;
   }
 }
 

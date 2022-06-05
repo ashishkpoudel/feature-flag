@@ -3,10 +3,18 @@ import { featureFlagStore } from './feature-flag.store';
 import { FEATURE_FILTER_METADATA } from './decorator/constants';
 import { IFeatureFilterHandler } from './interface/feature-filter-handler.interface';
 import { IFeature } from './interface/feature.interface';
+import { IFeatureFilter } from './interface/feature-filter.interface';
 import { containerProvider } from './container';
 
 export class FeatureManager {
+  private readonly filters = new Set<IFeatureFilter>();
+
   constructor(private readonly environment: string) {}
+
+  filter(filter: IFeatureFilter) {
+    this.filters.add(filter);
+    return this;
+  }
 
   async isEnabled(feature: IFeature | string): Promise<boolean> {
     const featureName = typeof feature === 'string' ? feature : feature['name'];
@@ -20,7 +28,9 @@ export class FeatureManager {
 
     for (const filter of filters) {
       const filterHandler = Reflect.getMetadata(FEATURE_FILTER_METADATA, filter.constructor);
-      const filterHandlerInstance = containerProvider.get<IFeatureFilterHandler>(filterHandler);
+      const filterHandlerInstance = containerProvider
+        .resolveContainer()
+        .get<IFeatureFilterHandler>(filterHandler);
       const evaluatedResult = await filterHandlerInstance.evaluate(filter);
       if (evaluatedResult) return true;
     }

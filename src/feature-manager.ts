@@ -3,18 +3,10 @@ import { featureFlagStore } from './feature-flag.store';
 import { FEATURE_FILTER_METADATA } from './decorator/constants';
 import { IFeatureFilterHandler } from './interface/feature-filter-handler.interface';
 import { IFeature } from './interface/feature.interface';
-import { IFeatureFilter } from './interface/feature-filter.interface';
 import { containerProvider } from './container';
 
 export class FeatureManager {
-  private readonly filters = new Set<IFeatureFilter>();
-
   constructor(private readonly environment: string) {}
-
-  filter(filter: IFeatureFilter) {
-    this.filters.add(filter);
-    return this;
-  }
 
   async isEnabled(feature: IFeature | string): Promise<boolean> {
     const featureName = typeof feature === 'string' ? feature : feature['name'];

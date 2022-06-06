@@ -9,11 +9,10 @@ import { containerProvider } from './container';
 export class FeatureManager {
   constructor(private readonly environment: string) {}
 
-  with() {
-    return this;
-  }
-
-  async isEnabled(feature: IFeature | string, filters: readonly IFeatureFilter[] = []): Promise<boolean> {
+  async isEnabled(
+    feature: IFeature | string,
+    filters: readonly IFeatureFilter[] = []
+  ): Promise<boolean> {
     const featureName = typeof feature === 'string' ? feature : feature['name'];
     const featureFlagOptions = featureFlagStore.get(this.environment, featureName);
 
@@ -21,9 +20,9 @@ export class FeatureManager {
       return false;
     }
 
-    const allFilters = [...(featureFlagOptions?.filters || [])];
+    const allFilters = [...(featureFlagOptions?.filters || []), ...filters];
 
-    for (const filter of filters) {
+    for (const filter of allFilters) {
       const filterHandler = Reflect.getMetadata(FEATURE_FILTER_METADATA, filter.constructor);
       const filterHandlerInstance = containerProvider
         .resolveContainer()

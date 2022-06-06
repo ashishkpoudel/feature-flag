@@ -19,7 +19,7 @@ describe('Feature Flag Manager', () => {
     @FeatureFlag('production', { enabled: false })
     class HostReport implements IFeature {}
 
-    expect(await featureManager.isEnabled(HostReport.name)).toEqual(false);
+    expect(await featureManager.isEnabled(HostReport)).toEqual(false);
   });
 
   it('feature should be enabled when default value is true', async () => {
@@ -28,6 +28,6 @@ describe('Feature Flag Manager', () => {
     @FeatureFlag('production', { enabled: true })
     class HostReport implements IFeature {}
 
-    expect(await featureManager.isEnabled(HostReport.name)).toEqual(true);
+    expect(await featureManager.isEnabled(HostReport)).toEqual(true);
   });
 });

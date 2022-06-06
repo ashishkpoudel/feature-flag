@@ -1,6 +1,6 @@
 import { IFeatureFilter } from './interface/feature-filter.interface';
 
-export interface Class<T> {
+export interface AnyClass<T> {
   new (...args: any[]): T;
 }
 

@@ -1,8 +1,8 @@
 import { IContainer } from './interface/container.interface';
-import { Class } from './types';
+import { AnyClass } from './types';
 
 class DefaultContainer implements IContainer {
-  get<T>(anyClass: Class<T>): T {
+  get<T>(anyClass: AnyClass<T>): T {
     return new anyClass();
   }
 }

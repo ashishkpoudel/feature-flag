@@ -1,5 +1,5 @@
-import { Class } from '../types';
+import { AnyClass } from '../types';
 
 export interface IContainer {
-  get<T>(anyClass: Class<T>, options?: Record<string, any>): T;
+  get<T>(anyClass: AnyClass<T>, options?: Record<string, any>): T;
 }

@@ -17,12 +17,12 @@ export class FeatureManager {
   async evaluate(
     feature: IFeature | string,
     filters: readonly IFeatureFilter[] = []
-  ): Promise<FeatureManagerResult> {
+  ): Promise<FeatureEvaluationResult> {
     const featureName = typeof feature === 'string' ? feature : feature['name'];
     const featureFlagOptions = featureFlagStore.get(this.environment, featureName);
 
     if (!featureFlagOptions || !featureFlagOptions.enabled) {
-      return new FeatureManagerResult(EvaluationStatus.DISABLED);
+      return new FeatureEvaluationResult(EvaluationStatus.DISABLED);
     }
 
     const allFilters = [...(featureFlagOptions?.filters || []), ...filters];
@@ -34,17 +34,27 @@ export class FeatureManager {
         .get<IFeatureFilterHandler>(filterHandler);
 
       const evaluatedResult = await filterHandlerInstance.evaluate(filter);
-      if (evaluatedResult) return new FeatureManagerResult(EvaluationStatus.ENABLED);
+      if (evaluatedResult) return new FeatureEvaluationResult(EvaluationStatus.ENABLED);
     }
 
-    return new FeatureManagerResult(EvaluationStatus.ENABLED);
+    return new FeatureEvaluationResult(EvaluationStatus.ENABLED);
   }
 }
 
-class FeatureManagerResult {
+class FeatureEvaluationResult {
   constructor(private readonly status: EvaluationStatus) {}
 
   get enabled() {
     return EvaluationStatus.ENABLED === this.status;
+  }
+
+  onEnabled(callback: Function) {
+    if (EvaluationStatus.ENABLED === this.status) callback();
+    return this;
+  }
+
+  onDisabled(callback: Function) {
+    if (EvaluationStatus.DISABLED === this.status) callback();
+    return this;
   }
 }

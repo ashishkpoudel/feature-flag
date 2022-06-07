@@ -31,7 +31,7 @@ describe('Feature Flag Filter', () => {
     })
     class HostReport implements IFeature {}
 
-    expect(await featureManager.isEnabled(HostReport)).toEqual(true);
+    expect((await featureManager.evaluate(HostReport)).enabled).toEqual(true);
   });
 
   it('feature should be disabled with enabled:false even if filters resolves to true', async () => {
@@ -43,7 +43,7 @@ describe('Feature Flag Filter', () => {
     })
     class HostReport implements IFeature {}
 
-    expect(await featureManager.isEnabled(HostReport)).toEqual(false);
+    expect((await featureManager.evaluate(HostReport)).enabled).toEqual(false);
   });
 
   it('feature should be enabled when one of the filter evaluates to true', async () => {
@@ -55,7 +55,7 @@ describe('Feature Flag Filter', () => {
     })
     class HostReport implements IFeature {}
 
-    expect(await featureManager.isEnabled(HostReport)).toEqual(true);
+    expect((await featureManager.evaluate(HostReport)).enabled).toEqual(true);
   });
 
   it('feature should be enabled with enabled:true and no filter is specified', async () => {
@@ -64,7 +64,7 @@ describe('Feature Flag Filter', () => {
     @FeatureFlag('production', { enabled: true })
     class HostReport implements IFeature {}
 
-    expect(await featureManager.isEnabled(HostReport)).toEqual(true);
+    expect((await featureManager.evaluate(HostReport)).enabled).toEqual(true);
   });
 
   it('feature should be disabled with enabled:false and no filter is specified', async () => {
@@ -73,7 +73,7 @@ describe('Feature Flag Filter', () => {
     @FeatureFlag('production', { enabled: false })
     class HostReport implements IFeature {}
 
-    expect(await featureManager.isEnabled(HostReport)).toEqual(false);
+    expect((await featureManager.evaluate(HostReport)).enabled).toEqual(false);
   });
 
   it('feature filters can be added right before evaluation', async () => {
@@ -82,6 +82,7 @@ describe('Feature Flag Filter', () => {
     @FeatureFlag('production', { enabled: true, filters: [new GenericFilter(false)] })
     class HostReport implements IFeature {}
 
-    expect(await featureManager.isEnabled(HostReport, [new GenericFilter(true)])).toEqual(true);
+    const hostReportFeature = await featureManager.evaluate(HostReport, [new GenericFilter(true)]);
+    expect(hostReportFeature.enabled).toEqual(true);
   });
 });

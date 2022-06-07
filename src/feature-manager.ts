@@ -6,18 +6,23 @@ import { IFeature } from './interface/feature.interface';
 import { IFeatureFilter } from './interface/feature-filter.interface';
 import { containerProvider } from './container';
 
+enum EvaluationStatus {
+  ENABLED = 'enabled',
+  DISABLED = 'disabled',
+}
+
 export class FeatureManager {
   constructor(private readonly environment: string) {}
 
-  async isEnabled(
+  async evaluate(
     feature: IFeature | string,
     filters: readonly IFeatureFilter[] = []
-  ): Promise<boolean> {
+  ): Promise<FeatureManagerResult> {
     const featureName = typeof feature === 'string' ? feature : feature['name'];
     const featureFlagOptions = featureFlagStore.get(this.environment, featureName);
 
     if (!featureFlagOptions || !featureFlagOptions.enabled) {
-      return false;
+      return new FeatureManagerResult(EvaluationStatus.DISABLED);
     }
 
     const allFilters = [...(featureFlagOptions?.filters || []), ...filters];
@@ -29,9 +34,17 @@ export class FeatureManager {
         .get<IFeatureFilterHandler>(filterHandler);
 
       const evaluatedResult = await filterHandlerInstance.evaluate(filter);
-      if (evaluatedResult) return true;
+      if (evaluatedResult) return new FeatureManagerResult(EvaluationStatus.ENABLED);
     }
 
-    return featureFlagOptions.enabled;
+    return new FeatureManagerResult(EvaluationStatus.ENABLED);
+  }
+}
+
+class FeatureManagerResult {
+  constructor(private readonly status: EvaluationStatus) {}
+
+  get enabled() {
+    return EvaluationStatus.ENABLED === this.status;
   }
 }

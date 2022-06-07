@@ -22,19 +22,16 @@ describe('Feature Flag Filter', () => {
     featureFlagStore.clear();
   });
 
-  it('feature should be enabled with enabled:true even if filters does not resolves to true', async () => {
+  it('feature should be disabled with enabled:true option if filters does not resolves to true', async () => {
     const featureManager = new FeatureManager('production');
 
-    @FeatureFlag('production', {
-      enabled: true,
-      filters: [new GenericFilter(false)],
-    })
+    @FeatureFlag('production', { enabled: true, filters: [new GenericFilter(false)] })
     class HostReport implements IFeature {}
 
-    expect(await featureManager.isEnabled(HostReport)).toEqual(true);
+    expect(await featureManager.isEnabled(HostReport)).toEqual(false);
   });
 
-  it('feature should be disabled with enabled:false even if filters resolves to true', async () => {
+  it('feature should be disabled with enabled:false option even if filters resolves to true', async () => {
     const featureManager = new FeatureManager('production');
 
     @FeatureFlag('production', {
@@ -58,7 +55,7 @@ describe('Feature Flag Filter', () => {
     expect(await featureManager.isEnabled(HostReport)).toEqual(true);
   });
 
-  it('feature should be enabled with enabled:true and no filter is specified', async () => {
+  it('feature should be enabled with enabled:true option and no filter is specified', async () => {
     const featureManager = new FeatureManager('production');
 
     @FeatureFlag('production', { enabled: true })
@@ -67,7 +64,7 @@ describe('Feature Flag Filter', () => {
     expect(await featureManager.isEnabled(HostReport)).toEqual(true);
   });
 
-  it('feature should be disabled with enabled:false and no filter is specified', async () => {
+  it('feature should be disabled with enabled:false option and no filter is specified', async () => {
     const featureManager = new FeatureManager('production');
 
     @FeatureFlag('production', { enabled: false })

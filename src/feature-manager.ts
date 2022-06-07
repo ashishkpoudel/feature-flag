@@ -32,6 +32,6 @@ export class FeatureManager {
       if (evaluatedResult) return true;
     }
 
-    return featureFlagOptions.enabled;
+    return !allFilters.length;
   }
 }

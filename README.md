@@ -22,8 +22,8 @@ Feature must be declared as a class. Feature flag configuration is then applied 
 ## Example
 
 ```typescript
-@FeatureFlag('production', { enabled: false })
-@FeatureFlag('staging', { enabled: true })
+@FeatureFlag('production', false)
+@FeatureFlag('staging', true)
 class HostReport implements IFeature {}
 ```
 

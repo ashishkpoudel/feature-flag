@@ -16,7 +16,7 @@ describe('Feature Flag Manager', () => {
   it('feature should be disabled when default value is false', async () => {
     const featureManager = new FeatureManager('production');
 
-    @FeatureFlag('production', { enabled: false })
+    @FeatureFlag('production', false)
     class HostReport implements IFeature {}
 
     expect(await featureManager.isEnabled(HostReport)).toEqual(false);
@@ -25,7 +25,7 @@ describe('Feature Flag Manager', () => {
   it('feature should be enabled when default value is true', async () => {
     const featureManager = new FeatureManager('production');
 
-    @FeatureFlag('production', { enabled: true })
+    @FeatureFlag('production', true)
     class HostReport implements IFeature {}
 
     expect(await featureManager.isEnabled(HostReport)).toEqual(true);

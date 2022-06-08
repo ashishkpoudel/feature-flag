@@ -22,22 +22,10 @@ describe('Feature Flag Filter', () => {
     featureFlagStore.clear();
   });
 
-  it('feature should be disabled with enabled:true option if filters does not resolves to true', async () => {
+  it('feature should be disabled if filters does not resolves to true', async () => {
     const featureManager = new FeatureManager('production');
 
-    @FeatureFlag('production', { enabled: true, filters: [new GenericFilter(false)] })
-    class HostReport implements IFeature {}
-
-    expect(await featureManager.isEnabled(HostReport)).toEqual(false);
-  });
-
-  it('feature should be disabled with enabled:false option even if filters resolves to true', async () => {
-    const featureManager = new FeatureManager('production');
-
-    @FeatureFlag('production', {
-      enabled: false,
-      filters: [new GenericFilter(true)],
-    })
+    @FeatureFlag('production', [new GenericFilter(false)])
     class HostReport implements IFeature {}
 
     expect(await featureManager.isEnabled(HostReport)).toEqual(false);
@@ -46,39 +34,31 @@ describe('Feature Flag Filter', () => {
   it('feature should be enabled when one of the filter evaluates to true', async () => {
     const featureManager = new FeatureManager('production');
 
-    @FeatureFlag('production', {
-      enabled: true,
-      filters: [new GenericFilter(false), new GenericFilter(true), new GenericFilter(false)],
-    })
+    @FeatureFlag('production', [
+      new GenericFilter(false),
+      new GenericFilter(true),
+      new GenericFilter(false),
+    ])
     class HostReport implements IFeature {}
 
     expect(await featureManager.isEnabled(HostReport)).toEqual(true);
-  });
-
-  it('feature should be enabled with enabled:true option and no filter is specified', async () => {
-    const featureManager = new FeatureManager('production');
-
-    @FeatureFlag('production', { enabled: true })
-    class HostReport implements IFeature {}
-
-    expect(await featureManager.isEnabled(HostReport)).toEqual(true);
-  });
-
-  it('feature should be disabled with enabled:false option and no filter is specified', async () => {
-    const featureManager = new FeatureManager('production');
-
-    @FeatureFlag('production', { enabled: false })
-    class HostReport implements IFeature {}
-
-    expect(await featureManager.isEnabled(HostReport)).toEqual(false);
   });
 
   it('feature filters can be added right before evaluation', async () => {
     const featureManager = new FeatureManager('production');
 
-    @FeatureFlag('production', { enabled: true, filters: [new GenericFilter(false)] })
+    @FeatureFlag('production', [new GenericFilter(false)])
     class HostReport implements IFeature {}
 
     expect(await featureManager.isEnabled(HostReport, [new GenericFilter(true)])).toEqual(true);
+  });
+
+  it('feature with default value false will not evaluate filters added right before evaluation', async () => {
+    const featureManager = new FeatureManager('production');
+
+    @FeatureFlag('production', false)
+    class HostReport implements IFeature {}
+
+    expect(await featureManager.isEnabled(HostReport, [new GenericFilter(true)])).toEqual(false);
   });
 });

@@ -5,16 +5,43 @@ import { FeatureManager } from '../src/feature-manager';
 import { featureFlagStore } from '../src/feature-flag.store';
 import { IFeatureFilterHandler } from '../src/interface/feature-filter-handler.interface';
 import { FeatureFilterHandler } from '../src/decorator/feature-filter-handler.decorator';
+import { IFeatureContext } from '../src/interface/feature-context.interface';
 
 describe('Feature Flag Filter', () => {
-  class GenericFilter implements IFeatureFilter {
-    constructor(readonly value: boolean) {}
+  class FeatureContext implements IFeatureContext {
+    readonly email?: string;
+    readonly browser?: string;
+
+    constructor(props: Partial<FeatureContext>) {
+      Object.assign(this, props);
+    }
   }
 
-  @FeatureFilterHandler(GenericFilter)
-  class _GenericFilterHandler implements IFeatureFilterHandler<GenericFilter> {
-    async evaluate(_filter: GenericFilter): Promise<boolean> {
-      return _filter.value;
+  class AllowedBrowserFilter implements IFeatureFilter {
+    constructor(readonly browsers: readonly string[]) {}
+  }
+
+  @FeatureFilterHandler(AllowedBrowserFilter)
+  class _AllowBrowserFilterHandler
+    implements IFeatureFilterHandler<AllowedBrowserFilter, FeatureContext>
+  {
+    async evaluate(filter, context): Promise<boolean> {
+      if (!context.browser) throw new Error('Allow browser filter requires param: browser');
+      return filter.browsers.includes(context.browser);
+    }
+  }
+
+  class AllowUsersFilter implements IFeatureFilter {
+    constructor(readonly emails: readonly string[]) {}
+  }
+
+  @FeatureFilterHandler(AllowUsersFilter)
+  class _AllowUsersFilterHandler
+    implements IFeatureFilterHandler<AllowUsersFilter, FeatureContext>
+  {
+    async evaluate(filter, context): Promise<boolean> {
+      if (!context.email) throw new Error('Allow users filter requires param: email');
+      return filter.emails.includes(context.email);
     }
   }
 
@@ -25,40 +52,23 @@ describe('Feature Flag Filter', () => {
   it('feature should be disabled if filters does not resolves to true', async () => {
     const featureManager = new FeatureManager('production');
 
-    @FeatureFlag('production', [new GenericFilter(false)])
+    @FeatureFlag('production', [new AllowUsersFilter(['allow@example.com'])])
     class HostReport implements IFeature {}
 
-    expect(await featureManager.isEnabled(HostReport)).toEqual(false);
+    const context = new FeatureContext({ email: 'do-not-allow@gmail.com' });
+    expect(await featureManager.isEnabled(HostReport, context)).toEqual(false);
   });
 
   it('feature should be enabled when one of the filter evaluates to true', async () => {
     const featureManager = new FeatureManager('production');
 
     @FeatureFlag('production', [
-      new GenericFilter(false),
-      new GenericFilter(true),
-      new GenericFilter(false),
+      new AllowUsersFilter(['ram@gmail.com']),
+      new AllowedBrowserFilter(['firefox']),
     ])
     class HostReport implements IFeature {}
 
-    expect(await featureManager.isEnabled(HostReport)).toEqual(true);
-  });
-
-  it('feature filters can be added right before evaluation', async () => {
-    const featureManager = new FeatureManager('production');
-
-    @FeatureFlag('production', [new GenericFilter(false)])
-    class HostReport implements IFeature {}
-
-    expect(await featureManager.isEnabled(HostReport, [new GenericFilter(true)])).toEqual(true);
-  });
-
-  it('feature with default value false will not evaluate filters added right before evaluation', async () => {
-    const featureManager = new FeatureManager('production');
-
-    @FeatureFlag('production', false)
-    class HostReport implements IFeature {}
-
-    expect(await featureManager.isEnabled(HostReport, [new GenericFilter(true)])).toEqual(false);
+    const context = new FeatureContext({ email: 'do-not-allow@gmail.com', browser: 'firefox' });
+    expect(await featureManager.isEnabled(HostReport, context)).toEqual(true);
   });
 });

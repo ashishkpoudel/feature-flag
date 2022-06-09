@@ -1,5 +1,9 @@
 import { IFeatureFilter } from './feature-filter.interface';
+import { IFeatureContext } from './feature-context.interface';
 
-export interface IFeatureFilterHandler<T extends IFeatureFilter = IFeatureFilter> {
-  evaluate(filter: T): Promise<boolean>;
+export interface IFeatureFilterHandler<
+  TFilter extends IFeatureFilter,
+  TContext extends IFeatureContext
+> {
+  evaluate(filter: TFilter, context?: TContext): Promise<boolean>;
 }

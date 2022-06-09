@@ -1,5 +1,6 @@
 export { FeatureManager } from './src/feature-manager';
 export { IFeature } from './src/interface/feature.interface';
+export { IFeatureContext } from './src/interface/feature-context.interface';
 export { FeatureFlag } from './src/decorator/feature-flag.decorator';
 export { IFeatureFilter } from './src/interface/feature-filter.interface';
 export { IFeatureFilterHandler } from './src/interface/feature-filter-handler.interface';

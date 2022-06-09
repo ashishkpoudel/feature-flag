@@ -5,6 +5,6 @@ export interface AnyClass<T> {
 }
 
 export interface FeatureOptions {
-  readonly enabled?: boolean;
+  readonly enabled: boolean;
   readonly filters?: readonly IFeatureFilter[];
 }

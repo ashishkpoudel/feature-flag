@@ -3,16 +3,14 @@ import { featureFlagStore } from './feature-flag.store';
 import { FEATURE_FILTER_METADATA } from './decorator/constants';
 import { IFeatureFilterHandler } from './interface/feature-filter-handler.interface';
 import { IFeature } from './interface/feature.interface';
+import { IFeatureContext } from './interface/feature-context.interface';
 import { IFeatureFilter } from './interface/feature-filter.interface';
 import { containerProvider } from './container';
 
 export class FeatureManager {
   constructor(private readonly environment: string) {}
 
-  async isEnabled(
-    feature: IFeature | string,
-    filters: readonly IFeatureFilter[] = []
-  ): Promise<boolean> {
+  async isEnabled(feature: IFeature | string, context?: IFeatureContext): Promise<boolean> {
     const featureName = typeof feature === 'string' ? feature : feature['name'];
     const featureFlagOptions = featureFlagStore.get(this.environment, featureName);
 
@@ -20,15 +18,15 @@ export class FeatureManager {
       return false;
     }
 
-    const allFilters = [...(featureFlagOptions?.filters || []), ...filters];
+    const allFilters = featureFlagOptions?.filters || [];
 
     for (const filter of allFilters) {
       const filterHandler = Reflect.getMetadata(FEATURE_FILTER_METADATA, filter.constructor);
       const filterHandlerInstance = containerProvider
         .resolveContainer()
-        .get<IFeatureFilterHandler>(filterHandler);
+        .get<IFeatureFilterHandler<IFeatureFilter, IFeatureContext>>(filterHandler);
 
-      const evaluatedResult = await filterHandlerInstance.evaluate(filter);
+      const evaluatedResult = await filterHandlerInstance.evaluate(filter, context);
       if (evaluatedResult) return true;
     }
 

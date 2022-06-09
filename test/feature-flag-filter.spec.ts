@@ -5,14 +5,13 @@ import { FeatureManager } from '../src/feature-manager';
 import { featureFlagStore } from '../src/feature-flag.store';
 import { IFeatureFilterHandler } from '../src/interface/feature-filter-handler.interface';
 import { FeatureFilterHandler } from '../src/decorator/feature-filter-handler.decorator';
-import { IFeatureContext } from '../src/interface/feature-context.interface';
 
 describe('Feature Flag Filter', () => {
-  class FeatureContext implements IFeatureContext {
+  class FeatureManagerContext {
     readonly email?: string;
     readonly browser?: string;
 
-    constructor(props: Partial<FeatureContext>) {
+    constructor(props: Partial<FeatureManagerContext>) {
       Object.assign(this, props);
     }
   }
@@ -23,7 +22,7 @@ describe('Feature Flag Filter', () => {
 
   @FeatureFilterHandler(AllowedBrowserFilter)
   class _AllowBrowserFilterHandler
-    implements IFeatureFilterHandler<AllowedBrowserFilter, FeatureContext>
+    implements IFeatureFilterHandler<AllowedBrowserFilter, FeatureManagerContext>
   {
     async evaluate(filter, context): Promise<boolean> {
       if (!context.browser) throw new Error('Allow browser filter requires param: browser');
@@ -37,7 +36,7 @@ describe('Feature Flag Filter', () => {
 
   @FeatureFilterHandler(AllowUsersFilter)
   class _AllowUsersFilterHandler
-    implements IFeatureFilterHandler<AllowUsersFilter, FeatureContext>
+    implements IFeatureFilterHandler<AllowUsersFilter, FeatureManagerContext>
   {
     async evaluate(filter, context): Promise<boolean> {
       if (!context.email) throw new Error('Allow users filter requires param: email');
@@ -55,7 +54,7 @@ describe('Feature Flag Filter', () => {
     @FeatureFlag('production', [new AllowUsersFilter(['allow@example.com'])])
     class HostReport implements IFeature {}
 
-    const context = new FeatureContext({ email: 'do-not-allow@gmail.com' });
+    const context = new FeatureManagerContext({ email: 'do-not-allow@gmail.com' });
     expect(await featureManager.isEnabled(HostReport, context)).toEqual(false);
   });
 
@@ -68,7 +67,10 @@ describe('Feature Flag Filter', () => {
     ])
     class HostReport implements IFeature {}
 
-    const context = new FeatureContext({ email: 'do-not-allow@gmail.com', browser: 'firefox' });
+    const context = new FeatureManagerContext({
+      email: 'do-not-allow@gmail.com',
+      browser: 'firefox',
+    });
     expect(await featureManager.isEnabled(HostReport, context)).toEqual(true);
   });
 });

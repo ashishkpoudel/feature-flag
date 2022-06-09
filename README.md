@@ -21,6 +21,8 @@ Feature must be declared as a class. Feature flag configuration is then applied 
 
 ## Example
 
+### Basic usage
+
 ```typescript
 @FeatureFlag('production', false)
 @FeatureFlag('staging', true)
@@ -30,9 +32,50 @@ class HostReport implements IFeature {}
 Above we've declared a feature called `HostReport` with feature flag configuration applied for multiple environment. Last step is to initialize feature manager and check if specified feature is enabled or not based on current environment.
 
 ```typescript
-const featureManager = new FeatureManager(process.env.APP_ENV);
-
 if (await featureManager.isEnabled(HostReport)) {
+  // run this block if enabled
+}
+```
+
+### Advance usage with feature filter
+Feature filter helps you enable a feature based on condition defined. You can assign multiple filters to a feature.
+
+```typescript
+interface AppContext {
+  readonly email?: string;
+}
+
+class AllowUsersFilter {
+  constructor(readonly emails: readonly string[]) {}
+}
+
+@FeatureFilterHandler(AllowUsersFilter)
+class AllowUsersFilterHandler implements IFeatureFilterHandler<AllowUsersFilter, AppContext> {
+  async evaluate(filter: AllowUsersFilter, context: AppContext) {
+    if (!context?.email) {
+      throw new Error('AllowUsersFilter requires param: email');
+    }
+
+    return filter.emails.includes(context.email);
+  }
+}
+```
+
+Assign filters to a feature
+```typescript
+@FeatureFlag('production', [new AllowUsersFilter(['john@gmail.com', 'doe@gmail.com'])])
+@FeatureFlag('staging', true)
+class HostReport implements IFeature {}
+```
+
+Finally, you can check if feature is enabled using feature manager.
+
+```typescript
+const context = {
+  email: 'john@gmail.com'
+};
+
+if (await featureManager.isEnabled(HostReport, context)) {
   // run this block if enabled
 }
 ```

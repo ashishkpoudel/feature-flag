@@ -26,7 +26,7 @@ export class FeatureManager {
       const filterHandler = Reflect.getMetadata(FEATURE_FILTER_METADATA, filter.constructor);
       const filterHandlerInstance = containerProvider
         .resolveContainer()
-        .get<IFeatureFilterHandler<IFeatureFilter, object>>(filterHandler);
+        .get<IFeatureFilterHandler<IFeatureFilter>>(filterHandler);
 
       const evaluatedResult = await filterHandlerInstance.evaluate(filter, context);
       if (evaluatedResult) return true;

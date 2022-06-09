@@ -7,13 +7,9 @@ import { IFeatureFilterHandler } from '../src/interface/feature-filter-handler.i
 import { FeatureFilterHandler } from '../src/decorator/feature-filter-handler.decorator';
 
 describe('Feature Flag Filter', () => {
-  class FeatureManagerContext {
+  interface FeatureManagerContext {
     readonly email?: string;
     readonly browser?: string;
-
-    constructor(props: Partial<FeatureManagerContext>) {
-      Object.assign(this, props);
-    }
   }
 
   class AllowedBrowserFilter implements IFeatureFilter {
@@ -54,7 +50,7 @@ describe('Feature Flag Filter', () => {
     @FeatureFlag('production', [new AllowUsersFilter(['allow@example.com'])])
     class HostReport implements IFeature {}
 
-    const context = new FeatureManagerContext({ email: 'do-not-allow@gmail.com' });
+    const context = { email: 'do-not-allow@gmail.com' } as FeatureManagerContext;
     expect(await featureManager.isEnabled(HostReport, context)).toEqual(false);
   });
 
@@ -67,10 +63,11 @@ describe('Feature Flag Filter', () => {
     ])
     class HostReport implements IFeature {}
 
-    const context = new FeatureManagerContext({
+    const context = {
       email: 'do-not-allow@gmail.com',
       browser: 'firefox',
-    });
+    } as FeatureManagerContext;
+
     expect(await featureManager.isEnabled(HostReport, context)).toEqual(true);
   });
 });

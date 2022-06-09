@@ -9,9 +9,9 @@ import { containerProvider } from './container';
 export class FeatureManager {
   constructor(private readonly environment: string) {}
 
-  async isEnabled(
+  async isEnabled<TContext extends object>(
     feature: IFeature | string,
-    filters: readonly IFeatureFilter[] = []
+    context?: TContext
   ): Promise<boolean> {
     const featureName = typeof feature === 'string' ? feature : feature['name'];
     const featureFlagOptions = featureFlagStore.get(this.environment, featureName);
@@ -20,15 +20,15 @@ export class FeatureManager {
       return false;
     }
 
-    const allFilters = [...(featureFlagOptions?.filters || []), ...filters];
+    const allFilters = featureFlagOptions?.filters || [];
 
     for (const filter of allFilters) {
       const filterHandler = Reflect.getMetadata(FEATURE_FILTER_METADATA, filter.constructor);
       const filterHandlerInstance = containerProvider
         .resolveContainer()
-        .get<IFeatureFilterHandler>(filterHandler);
+        .get<IFeatureFilterHandler<IFeatureFilter, object>>(filterHandler);
 
-      const evaluatedResult = await filterHandlerInstance.evaluate(filter);
+      const evaluatedResult = await filterHandlerInstance.evaluate(filter, context);
       if (evaluatedResult) return true;
     }
 

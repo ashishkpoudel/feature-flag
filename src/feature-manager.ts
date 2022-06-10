@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { featureFlagStore } from './feature-flag.store';
 import { FEATURE_FILTER_METADATA } from './decorator/constants';
-import { IFeatureFilterHandler } from './interface/feature-filter-handler.interface';
+import { IStrategyHandler } from './interface/strategy-handler.interface';
 import { IFeature } from './interface/feature.interface';
-import { IFeatureFilter } from './interface/feature-filter.interface';
+import { IStrategy } from './interface/strategy.interface';
 import { containerProvider } from './container';
 
 export class FeatureManager {
@@ -20,18 +20,18 @@ export class FeatureManager {
       return false;
     }
 
-    const allFilters = featureFlagOptions?.filters || [];
+    const strategies = featureFlagOptions?.strategies || [];
 
-    for (const filter of allFilters) {
-      const filterHandler = Reflect.getMetadata(FEATURE_FILTER_METADATA, filter.constructor);
+    for (const strategy of strategies) {
+      const filterHandler = Reflect.getMetadata(FEATURE_FILTER_METADATA, strategy.constructor);
       const filterHandlerInstance = containerProvider
         .resolveContainer()
-        .get<IFeatureFilterHandler<IFeatureFilter>>(filterHandler);
+        .get<IStrategyHandler<IStrategy>>(filterHandler);
 
-      const evaluatedResult = await filterHandlerInstance.evaluate(filter, context);
+      const evaluatedResult = await filterHandlerInstance.evaluate(strategy, context);
       if (evaluatedResult) return true;
     }
 
-    return !allFilters.length;
+    return !strategies.length;
   }
 }

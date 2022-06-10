@@ -37,33 +37,33 @@ if (await featureManager.isEnabled(HostReport)) {
 }
 ```
 
-### Advance usage with feature filter
-Feature filter helps you enable a feature based on condition defined. You can assign multiple filters to a feature.
+### Advance usage with strategies
+Strategy helps you enable a feature based on condition defined. You can assign multiple strategies to a feature.
 
 ```typescript
-interface AppContext {
+interface FeatureManagerContext {
   readonly email?: string;
 }
 
-class AllowUsersFilter {
+class AllowUsers {
   constructor(readonly emails: readonly string[]) {}
 }
 
-@FeatureFilterHandler(AllowUsersFilter)
-class AllowUsersFilterHandler implements IFeatureFilterHandler<AllowUsersFilter, AppContext> {
-  async evaluate(filter: AllowUsersFilter, context: AppContext) {
+@StrategyHandler(AllowUsers)
+class AllowUsersHandler implements IStrategyHandler<AllowUsers, FeatureManagerContext> {
+  async evaluate(strategy: AllowUsers, context: FeatureManagerContext) {
     if (!context?.email) {
-      throw new Error('AllowUsersFilter requires param: email');
+      throw new Error('AllowUsers Strategy requires param: email');
     }
 
-    return filter.emails.includes(context.email);
+    return strategy.emails.includes(context.email);
   }
 }
 ```
 
-Assign filters to a feature
+Assign strategy to a feature
 ```typescript
-@FeatureFlag('production', [new AllowUsersFilter(['john@gmail.com', 'doe@gmail.com'])])
+@FeatureFlag('production', [new AllowUsers(['john@gmail.com', 'doe@gmail.com'])])
 @FeatureFlag('staging', true)
 class HostReport implements IFeature {}
 ```

@@ -1,7 +1,3 @@
-### NOTE: under rapid development, not ready for production use
-
----
-
 # Feature Management
 
 Feature Management (also called feature toggle, feature flag) makes it easier to enable or disable feature based on specified configuration.

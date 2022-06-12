@@ -17,8 +17,8 @@ describe('Feature Flag Strategy', () => {
   }
 
   @StrategyHandler(AllowedBrowser)
-  class _AllowBrowserHandler implements IStrategyHandler<AllowedBrowser, FeatureManagerContext> {
-    async evaluate(filter, context): Promise<boolean> {
+  class _AllowBrowserHandler implements IStrategyHandler {
+    async evaluate(filter: AllowedBrowser, context: FeatureManagerContext): Promise<boolean> {
       if (!context.browser) throw new Error('Allow browser filter requires param: browser');
       return filter.browsers.includes(context.browser);
     }
@@ -29,8 +29,8 @@ describe('Feature Flag Strategy', () => {
   }
 
   @StrategyHandler(AllowUsers)
-  class _AllowUsersHandler implements IStrategyHandler<AllowUsers, FeatureManagerContext> {
-    async evaluate(filter, context): Promise<boolean> {
+  class _AllowUsersHandler implements IStrategyHandler {
+    async evaluate(filter: AllowUsers, context: FeatureManagerContext): Promise<boolean> {
       if (!context.email) throw new Error('Allow users filter requires param: email');
       return filter.emails.includes(context.email);
     }

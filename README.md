@@ -50,7 +50,7 @@ class AllowUsers {
 }
 
 @StrategyHandler(AllowUsers)
-class AllowUsersHandler implements IStrategyHandler<AllowUsers, FeatureManagerContext> {
+class AllowUsersHandler implements IStrategyHandler {
   async evaluate(strategy: AllowUsers, context: FeatureManagerContext) {
     if (!context?.email) {
       throw new Error('AllowUsers Strategy requires param: email');

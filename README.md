@@ -1,5 +1,9 @@
 # Feature Management
 
+```
+Status: Experimental
+```
+
 Feature Management (also called feature toggle, feature flag) makes it easier to enable or disable feature based on specified configuration.
 
 ## Installation
